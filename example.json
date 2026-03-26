@@ -12,6 +12,7 @@
         "_isIndexEnabled": true,
         "_isGroupHeadersEnabled": true,
         "_isSearchEnabled": true,
+        "_csvGlossaryItems": "Employer,A person or company that contracts people to work for them.\nEmployee,\"Someone who works for an employer under a contract of employment, receiving a regular wage or salary in return for their work.\"",
         "_glossaryItems": [
             {
                 "term": "Adapt Framework",

@@ -196,7 +196,7 @@
                   "type": "array",
                   "required": true,
                   "title": "Glossary items",
-                  "minItems": 1,
+                  "minItems": 0,
                   "items": {
                     "type": "object",
                     "required": true,
@@ -239,6 +239,16 @@
                       }
                     }
                   }
+                },
+                "_csvGlossaryItems": {
+                  "type": "string",
+                  "required": false,
+                  "default": "",
+                  "title": "Glossary items CSV",
+                  "inputType": "TextArea",
+                  "validators": [],
+                  "help": "Paste CSV text to bulk add glossary terms. The headword is used for both Term and Term ARIA label.",
+                  "translatable": true
                 }
               }
             }

@@ -2,6 +2,78 @@ import Adapt from 'core/js/adapt';
 import drawer from 'core/js/drawer';
 import GlossaryView from './adapt-contrib-glossaryView';
 
+function parseCsvRows(csvText = '') {
+  const rows = [];
+  let row = [];
+  let value = '';
+  let isInsideQuotes = false;
+
+  for (let i = 0; i < csvText.length; i++) {
+    const char = csvText[i];
+    const nextChar = csvText[i + 1];
+
+    if (char === '"') {
+      if (isInsideQuotes && nextChar === '"') {
+        value += '"';
+        i++;
+        continue;
+      }
+      isInsideQuotes = !isInsideQuotes;
+      continue;
+    }
+
+    if (char === ',' && !isInsideQuotes) {
+      row.push(value);
+      value = '';
+      continue;
+    }
+
+    if ((char === '\n' || char === '\r') && !isInsideQuotes) {
+      if (char === '\r' && nextChar === '\n') {
+        i++;
+      }
+      row.push(value);
+      rows.push(row);
+      row = [];
+      value = '';
+      continue;
+    }
+
+    value += char;
+  }
+
+  if (value.length || row.length) {
+    row.push(value);
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function getGlossaryItemsFromCsv(csvText = '') {
+  if (!csvText.trim()) return [];
+
+  return parseCsvRows(csvText).reduce((items, row) => {
+    for (let i = 0; i < row.length; i += 2) {
+      while (i < row.length && !row[i].trim()) {
+        i++;
+      }
+      if (i >= row.length) break;
+
+      const term = row[i].trim();
+      const description = (row[i + 1] || '').trim();
+      if (!term || !description) continue;
+
+      items.push({
+        term,
+        termAriaLabel: term,
+        description
+      });
+    }
+    return items;
+  }, []);
+}
+
 function setupGlossary(glossaryModel, glossaryItems) {
 
   const options = {
@@ -46,9 +118,16 @@ function initGlossary() {
     drawerOrder: courseGlossary._drawerOrder || 0
   };
 
+  const manualGlossaryItems = courseGlossary._glossaryItems || [];
+  const csvGlossaryItems = getGlossaryItemsFromCsv(courseGlossary._csvGlossaryItems || '');
+  const glossaryItems = [
+    ...manualGlossaryItems,
+    ...csvGlossaryItems
+  ];
+
   drawer.addItem(drawerObject, 'glossary:showGlossary');
 
-  setupGlossary(courseGlossary, courseGlossary._glossaryItems);
+  setupGlossary(courseGlossary, glossaryItems);
 }
 
 Adapt.on('app:dataReady', initGlossary);

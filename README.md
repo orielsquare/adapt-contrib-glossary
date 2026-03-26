@@ -31,7 +31,7 @@ The index links to the group headers. If the index is enabled, group headings wi
 
 The attributes listed below are used in *course.json* to configure **Glossary**, and are properly formatted as JSON in [*example.json*](https://github.com/adaptlearning/adapt-contrib-glossary/blob/master/example.json).
 
-**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, and **\_glossaryItems**.
+**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, **\_glossaryItems**, and **\_csvGlossaryItems**.
 
 >**\_isEnabled** (boolean): Turns **Glossary** on and off. Acceptable values are `true` and `false`.
 
@@ -58,6 +58,8 @@ The attributes listed below are used in *course.json* to configure **Glossary**,
 >**\_isGroupHeadersEnabled** (boolean): Turns the group headers on and off. Terms are alphabetized and grouped by their initial character (number or letter). Acceptable values are `true` and `false`. The default is `false`.  Headers are most effective when used with long lists of terms. If **\_isIndexEnabled** is set to `true`, **\_isGroupHeadersEnabled** will be set to `true` when the course is running, regardless of its original value.
 
 >**\_glossaryItems** (object): This object stores properties for each glossary item. Multiple glossary items may be created. Each contains values for **term**, **termAriaLabel**  and **description**.
+
+>**\_csvGlossaryItems** (string): Optional CSV text for bulk import of glossary entries. Each term/description pair is converted into a glossary item. The headword is used for both **term** and **termAriaLabel**.
 
 >>**term** (string): The word or phrase that comprises the glossary term.
 

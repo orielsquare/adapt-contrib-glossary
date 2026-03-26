@@ -218,8 +218,18 @@
                 }
               },
               "_unrecognisedFields": {
-                "minItems": 1
+                "minItems": 0
               }
+            },
+            "_csvGlossaryItems": {
+              "type": "string",
+              "title": "Glossary items CSV",
+              "description": "Paste CSV text to bulk add glossary terms. The headword is used for both Term and Term ARIA label.",
+              "default": "",
+              "_adapt": {
+                "translatable": true
+              },
+              "_backboneForms": "TextArea"
             }
           }
         }
