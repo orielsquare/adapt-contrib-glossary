@@ -155,6 +155,19 @@
                 ]
               }
             },
+            "_autoLinkTermsInBody": {
+              "type": "boolean",
+              "title": "Auto-link terms in component body",
+              "description": "If set to 'true', glossary terms in component body text will be auto-linked at render time.",
+              "default": false,
+              "_backboneForms": {
+                "type": "Boolean",
+                "options": [
+                  false,
+                  true
+                ]
+              }
+            },
             "_isIndexEnabled": {
               "type": "boolean",
               "title": "Enable Index",
@@ -200,7 +213,7 @@
                   "term": {
                     "type": "string",
                     "title": "Term",
-                    "description": "The glossary item/term",
+                    "description": "The glossary item/term. Optional derivative syntax for auto-linking: employer[employers|emps]",
                     "default": "",
                     "_adapt": {
                       "translatable": true

@@ -31,7 +31,7 @@ The index links to the group headers. If the index is enabled, group headings wi
 
 The attributes listed below are used in *course.json* to configure **Glossary**, and are properly formatted as JSON in [*example.json*](https://github.com/adaptlearning/adapt-contrib-glossary/blob/master/example.json).
 
-**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, **\_glossaryItems**, and **\_csvGlossaryItems**.
+**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_autoLinkTermsInBody**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, **\_glossaryItems**, and **\_csvGlossaryItems**.
 
 >**\_isEnabled** (boolean): Turns **Glossary** on and off. Acceptable values are `true` and `false`.
 
@@ -53,6 +53,8 @@ The attributes listed below are used in *course.json* to configure **Glossary**,
 
 >**\_isSearchEnabled** (boolean): Turns the search function on and off. Acceptable values are `true` and `false`. The default is `true`. If set to `false`, the search container is not displayed.
 
+>**\_autoLinkTermsInBody** (boolean): Turns automatic term linking in component body text on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `true`, terms found in component body text are wrapped in links in the format `<a href='#' data-glossaryterm='term'>term</a>`. This also applies to matching question statement text (for example `.matching-item__title_inner`) but does not apply to matching dropdown answer options.
+
 >**\_isIndexEnabled** (boolean): Turns the index header on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `false`, the index is not displayed. The index acts as a menu for grouped terms. It is most effective when used with long lists of terms. If **\_isIndexEnabled** is set to `true`, **\_isGroupHeadersEnabled** will be set to `true` when the course is running.
 
 >**\_isGroupHeadersEnabled** (boolean): Turns the group headers on and off. Terms are alphabetized and grouped by their initial character (number or letter). Acceptable values are `true` and `false`. The default is `false`.  Headers are most effective when used with long lists of terms. If **\_isIndexEnabled** is set to `true`, **\_isGroupHeadersEnabled** will be set to `true` when the course is running, regardless of its original value.
@@ -61,7 +63,7 @@ The attributes listed below are used in *course.json* to configure **Glossary**,
 
 >**\_csvGlossaryItems** (string): Optional CSV text for bulk import of glossary entries. Each term/description pair is converted into a glossary item. The headword is used for both **term** and **termAriaLabel**.
 
->>**term** (string): The word or phrase that comprises the glossary term.
+>>**term** (string): The word or phrase that comprises the glossary term. When **\_autoLinkTermsInBody** is enabled, you can optionally define derivatives in square brackets separated by pipes (for example `employer[employers|emps]`). The glossary displays the headword (`employer`), and auto-linking will match headword and derivatives case-insensitively.
 
 >>**termAriaLabel** (string): Optional, reading of the word or phrase that comprises the glossary term. If unset, **term** provides the aria-label.
 

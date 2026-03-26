@@ -162,6 +162,21 @@
                   "validators": [],
                   "help": "If set to 'true', the glossary extension will be enabled"
                 },
+                "_autoLinkTermsInBody": {
+                  "type": "boolean",
+                  "required": false,
+                  "title": "Auto-link terms in component body",
+                  "default": false,
+                  "inputType": {
+                    "type": "Boolean",
+                    "options": [
+                      false,
+                      true
+                    ]
+                  },
+                  "validators": [],
+                  "help": "If set to 'true', glossary terms in component body text will be auto-linked at render time."
+                },
                 "_isIndexEnabled": {
                   "type": "boolean",
                   "required": false,
@@ -222,7 +237,7 @@
                         "validators": [
                           "required"
                         ],
-                        "help": "The glossary item/term",
+                        "help": "The glossary item/term. Optional derivative syntax for auto-linking: employer[employers|emps]",
                         "translatable": true
                       },
                       "termAriaLabel": {
