@@ -28,17 +28,54 @@ export default class GlossaryView extends Backbone.View {
   }
 
   checkForTermToShow() {
-    const term = this.$el.data('termtoshow');
-    if (!term) return false;
-    for (const { model } of this.itemViews) {
-      if (model.get('term').toLowerCase() !== term.toLowerCase()) continue;
-      Adapt.trigger('glossary:descriptionOpen', {
-        viewId: model.cid,
-        shouldFocusDescription: true
+    const termToShow = this.$el.data('termtoshow');
+    if (!termToShow) return false;
+    const matchedItemView = this.findItemViewByTerm(termToShow);
+    if (!matchedItemView) return false;
+    this.scrollToItem(matchedItemView.$el);
+    Adapt.trigger('glossary:descriptionOpen', {
+      viewId: matchedItemView.model.cid,
+      shouldFocusDescription: true
+    });
+    return true;
+  }
+
+  findItemViewByTerm(termToMatch) {
+    const normalizedTermToMatch = this.normalizeTerm(termToMatch);
+    if (!normalizedTermToMatch) return null;
+    for (const itemView of this.itemViews) {
+      const { model } = itemView;
+      const candidateTerms = [
+        model.get('term'),
+        model.get('termAriaLabel'),
+        ...(model.get('_autoLinkTerms') || [])
+      ];
+      const hasMatchingTerm = candidateTerms.some(candidateTerm => {
+        return this.normalizeTerm(candidateTerm) === normalizedTermToMatch;
       });
-      return true;
+      if (!hasMatchingTerm) continue;
+      return itemView;
     }
-    return false;
+    return null;
+  }
+
+  normalizeTerm(value = '') {
+    return String(value)
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;|&#160;/gi, ' ')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+  }
+
+  scrollToItem($item) {
+    if (!$item || !$item.length) return;
+    const $drawerHolder = $('.js-drawer-holder');
+    if (!$drawerHolder.length) return;
+    const itemOffsetTop = $item.position().top;
+    if (!Number.isFinite(itemOffsetTop)) return;
+    $drawerHolder.stop(true, true).animate({ scrollTop: Math.max(itemOffsetTop - 20, 0) });
   }
 
   remove() {
