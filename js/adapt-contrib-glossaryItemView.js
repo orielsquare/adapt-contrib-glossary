@@ -70,8 +70,11 @@ export default class GlossaryItemView extends Backbone.View {
    */
   showGlossaryItemDescription() {
     const $glossaryItemTerm = this.$('.js-glossary-item-term-click');
-    const $description = $glossaryItemTerm.addClass('is-selected').siblings('.js-glossary-item-description').slideDown(200, () => {
-      a11y.focusFirst($description, { defer: true });
+    const $description = $glossaryItemTerm.addClass('is-selected').siblings('.js-glossary-item-description');
+    const $descriptionInner = $description.children('.js-glossary-item-description-inner');
+    const shouldFocusDescription = (arguments[0] && arguments[0].shouldFocusDescription);
+    $description.slideDown(200, () => {
+      a11y.focusFirst(shouldFocusDescription ? $descriptionInner : $description, { defer: true });
     });
     $glossaryItemTerm.attr('aria-expanded', true);
     this.model.set('_isDescriptionOpen', true);
@@ -88,9 +91,15 @@ export default class GlossaryItemView extends Backbone.View {
   }
 
   // This function will decide whether this glossary item's description should be visible or not.
-  descriptionOpen(viewId) {
+  descriptionOpen(openData) {
+    const shouldFocusDescription = (openData && typeof openData === 'object' && openData.shouldFocusDescription);
+    const viewId = (openData && typeof openData === 'object') ? openData.viewId : openData;
     if (viewId === this.model.cid) {
-      this.toggleGlossaryItemDescription();
+      if (this.model.get('_isDescriptionOpen')) {
+        this.hideGlossaryItemDescription();
+        return;
+      }
+      this.showGlossaryItemDescription({ shouldFocusDescription });
       return;
     }
 

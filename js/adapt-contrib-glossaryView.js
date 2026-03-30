@@ -1,3 +1,4 @@
+import a11y from 'core/js/a11y';
 import Adapt from 'core/js/adapt';
 import GlossaryItemView from './adapt-contrib-glossaryItemView';
 
@@ -28,12 +29,16 @@ export default class GlossaryView extends Backbone.View {
 
   checkForTermToShow() {
     const term = this.$el.data('termtoshow');
-    if (!term) return;
+    if (!term) return false;
     for (const { model } of this.itemViews) {
       if (model.get('term').toLowerCase() !== term.toLowerCase()) continue;
-      Adapt.trigger('glossary:descriptionOpen', model.cid);
-      break;
+      Adapt.trigger('glossary:descriptionOpen', {
+        viewId: model.cid,
+        shouldFocusDescription: true
+      });
+      return true;
     }
+    return false;
   }
 
   remove() {
@@ -154,7 +159,15 @@ export default class GlossaryView extends Backbone.View {
       'drawer:triggerCustomView': this.remove
     });
 
-    this.checkForTermToShow();
+    if (this.checkForTermToShow()) return;
+    this.focusSearchInput();
+  }
+
+  focusSearchInput() {
+    if (!this.model.get('_isSearchEnabled')) return;
+    const $input = this.$('.js-glossary-textbox-change');
+    if (!$input.length) return;
+    a11y.focusFirst($input, { defer: true });
   }
 
   onInputTextBoxValueChange() {
