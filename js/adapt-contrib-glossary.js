@@ -186,12 +186,26 @@ function createAutoLinkMatcher(glossaryItems = []) {
 
   return {
     termsByLowercase,
-    termRegex: new RegExp(`(^|[^0-9A-Za-z])(${terms.map(escapeRegExp).join('|')})(?=$|[^0-9A-Za-z])`, 'gi')
+    termRegex: new RegExp(`(^|[^0-9A-Za-z])(${terms.map(escapeRegExp).join('|')})(?=$|[^0-9A-Za-z])`, 'gi'),
+    suppressedTerms: new Set()
   };
 }
 
+function registerSuppressedTerms(text, matcher) {
+  const { termRegex, termsByLowercase, suppressedTerms } = matcher;
+  if (!text || !suppressedTerms) return;
+
+  termRegex.lastIndex = 0;
+  let match;
+  while ((match = termRegex.exec(text))) {
+    const matchedTerm = match[2];
+    const canonicalTerm = termsByLowercase[matchedTerm.toLowerCase()] || matchedTerm;
+    suppressedTerms.add(canonicalTerm.toLowerCase());
+  }
+}
+
 function transformTextNodeWithGlossaryLinks(textNode, matcher) {
-  const { termRegex, termsByLowercase } = matcher;
+  const { termRegex, termsByLowercase, suppressedTerms } = matcher;
   const text = textNode.nodeValue || '';
   termRegex.lastIndex = 0;
 
@@ -220,6 +234,13 @@ function transformTextNodeWithGlossaryLinks(textNode, matcher) {
     }
 
     const glossaryTerm = termsByLowercase[matchedTerm.toLowerCase()] || matchedTerm;
+
+    if (suppressedTerms && suppressedTerms.has(glossaryTerm.toLowerCase())) {
+      fragment.appendChild(document.createTextNode(matchedTerm));
+      lastIndex = matchEndIndex;
+      continue;
+    }
+
     const glossaryLink = document.createElement('a');
     glossaryLink.setAttribute('href', '#');
     glossaryLink.setAttribute('data-glossaryterm', glossaryTerm);
@@ -243,19 +264,31 @@ function autoLinkTermsInElement($element, matcher) {
     return;
   }
 
-  const excludedParentSelector = 'a, button, textarea, script, style';
+  const excludedParentSelector = 'a, button, textarea, script, style, .dontGloss';
+  const suppressParentSelector = '.dontGlossAgain';
   const walker = document.createTreeWalker(rootElement, NodeFilter.SHOW_TEXT, null, false);
-  const textNodes = [];
+  const classifiedNodes = [];
   let node;
 
   while ((node = walker.nextNode())) {
     if (!node.nodeValue || !node.nodeValue.trim()) continue;
     const parentElement = node.parentElement;
-    if (parentElement && parentElement.closest(excludedParentSelector)) continue;
-    textNodes.push(node);
+    if (!parentElement) continue;
+    if (parentElement.closest(suppressParentSelector)) {
+      classifiedNodes.push({ node, type: 'suppress' });
+      continue;
+    }
+    if (parentElement.closest(excludedParentSelector)) continue;
+    classifiedNodes.push({ node, type: 'gloss' });
   }
 
-  textNodes.forEach(textNode => transformTextNodeWithGlossaryLinks(textNode, matcher));
+  classifiedNodes.forEach(({ node: textNode, type }) => {
+    if (type === 'suppress') {
+      registerSuppressedTerms(textNode.nodeValue, matcher);
+      return;
+    }
+    transformTextNodeWithGlossaryLinks(textNode, matcher);
+  });
   rootElement.setAttribute('data-glossary-autolinked', 'true');
 }
 
@@ -272,7 +305,21 @@ function setupAutoLinking(glossaryModel, glossaryItems) {
       '.component__body-inner',
       '.component__body',
       '.matching-item__title_inner',
-      '.matching-item__title'
+      '.matching-item__title',
+      '.tabs__content-item-title-inner',
+      '.tabs__content-item-title',
+      '.tabs__content-item-body-inner',
+      '.tabs__content-item-body',
+      '.narrative__content-title-inner',
+      '.narrative__content-title',
+      '.narrative__content-body-inner',
+      '.narrative__content-body',
+      '.os-narrative__content-title-inner',
+      '.os-narrative__content-title',
+      '.os-narrative__content-body-inner',
+      '.os-narrative__content-body',
+      '.os-flipcards__title',
+      '.os-flipcards__text'
     ];
 
     selectorsToAutoLink.forEach(selector => {

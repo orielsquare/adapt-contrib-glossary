@@ -53,7 +53,17 @@ The attributes listed below are used in *course.json* to configure **Glossary**,
 
 >**\_isSearchEnabled** (boolean): Turns the search function on and off. Acceptable values are `true` and `false`. The default is `true`. If set to `false`, the search container is not displayed.
 
->**\_autoLinkTermsInBody** (boolean): Turns automatic term linking in component body text on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `true`, terms found in component body text are wrapped in links in the format `<a href='#' data-glossaryterm='term'>term</a>`. This also applies to matching question statement text (for example `.matching-item__title_inner`) but does not apply to matching dropdown answer options.
+>**\_autoLinkTermsInBody** (boolean): Turns automatic term linking in component body text on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `true`, terms found in component body text are wrapped in links in the format `<a href='#' data-glossaryterm='term'>term</a>`. As well as standard component body text, this applies to matching question statement text (for example `.matching-item__title_inner`), Tabs item titles and bodies, (core and OS) Narrative slide titles and bodies, and OS Flipcards card titles and text. It does not apply to matching dropdown answer options.
+
+### Preventing auto-linking of specific words
+
+When **\_autoLinkTermsInBody** is enabled, you can prevent individual occurrences of a word from being linked by wrapping them in a `span`:
+
+>`<span class="dontGloss">word</span>`: This occurrence is not linked. Any other occurrences are unaffected.
+
+>`<span class="dontGlossAgain">word</span>`: This occurrence is not linked, and no subsequent occurrence of the same term is linked either. This is useful to prevent a term being linked too frequently.
+
+Both markers are case-insensitive and act on the glossary term (so suppressing one derivative suppresses the whole term group). `dontGlossAgain` suppression applies from that point onward in reading order across the course for the current session.
 
 >**\_isIndexEnabled** (boolean): Turns the index header on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `false`, the index is not displayed. The index acts as a menu for grouped terms. It is most effective when used with long lists of terms. If **\_isIndexEnabled** is set to `true`, **\_isGroupHeadersEnabled** will be set to `true` when the course is running.
 
