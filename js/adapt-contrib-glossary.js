@@ -205,7 +205,7 @@ function registerSuppressedTerms(text, matcher) {
 }
 
 function transformTextNodeWithGlossaryLinks(textNode, matcher) {
-  const { termRegex, termsByLowercase, suppressedTerms } = matcher;
+  const { termRegex, termsByLowercase, suppressedTerms, firstInstanceOnly } = matcher;
   const text = textNode.nodeValue || '';
   termRegex.lastIndex = 0;
 
@@ -246,6 +246,10 @@ function transformTextNodeWithGlossaryLinks(textNode, matcher) {
     glossaryLink.setAttribute('data-glossaryterm', glossaryTerm);
     glossaryLink.textContent = matchedTerm;
     fragment.appendChild(glossaryLink);
+
+    if (firstInstanceOnly && suppressedTerms) {
+      suppressedTerms.add(glossaryTerm.toLowerCase());
+    }
 
     lastIndex = matchEndIndex;
   }
@@ -297,6 +301,8 @@ function setupAutoLinking(glossaryModel, glossaryItems) {
 
   const matcher = createAutoLinkMatcher(glossaryItems);
   if (!matcher) return;
+
+  matcher.firstInstanceOnly = glossaryModel._autoLinkFirstInstanceOnly !== false;
 
   Adapt.on('view:postRender', view => {
     if (!view || !view.model || view.model.get('_type') !== 'component') return;

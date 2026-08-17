@@ -13,6 +13,7 @@
         "_isGroupHeadersEnabled": true,
         "_isSearchEnabled": true,
         "_autoLinkTermsInBody": true,
+        "_autoLinkFirstInstanceOnly": true,
         "_csvGlossaryItems": "Employer[Employers|Emps],A person or company that contracts people to work for them.\nEmployee,\"Someone who works for an employer under a contract of employment, receiving a regular wage or salary in return for their work.\"",
         "_glossaryItems": [
             {

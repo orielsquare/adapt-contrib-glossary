@@ -168,6 +168,19 @@
                 ]
               }
             },
+            "_autoLinkFirstInstanceOnly": {
+              "type": "boolean",
+              "title": "Auto-link first instance only",
+              "description": "If set to 'true', each glossary term is auto-linked only on its first occurrence in the course (per session). Only applies when 'Auto-link terms in component body' is enabled.",
+              "default": true,
+              "_backboneForms": {
+                "type": "Boolean",
+                "options": [
+                  false,
+                  true
+                ]
+              }
+            },
             "_isIndexEnabled": {
               "type": "boolean",
               "title": "Enable Index",

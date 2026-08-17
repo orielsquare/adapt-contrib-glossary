@@ -31,7 +31,7 @@ The index links to the group headers. If the index is enabled, group headings wi
 
 The attributes listed below are used in *course.json* to configure **Glossary**, and are properly formatted as JSON in [*example.json*](https://github.com/adaptlearning/adapt-contrib-glossary/blob/master/example.json).
 
-**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_autoLinkTermsInBody**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, **\_glossaryItems**, and **\_csvGlossaryItems**.
+**\_glossary** (object): The Glossary object that contains values for **\_isEnabled**, **\_drawerOrder*, **title**, **description**, **searchItemsAlert**, **clearSearch**, **searchPlaceholder**, **searchWithInDescriptionLabel**, **itemNotFoundMessage**, **\_isSearchEnabled**, **\_autoLinkTermsInBody**, **\_autoLinkFirstInstanceOnly**, **\_isIndexEnabled**, **\_isGroupHeadersEnabled**, **\_glossaryItems**, and **\_csvGlossaryItems**.
 
 >**\_isEnabled** (boolean): Turns **Glossary** on and off. Acceptable values are `true` and `false`.
 
@@ -54,6 +54,8 @@ The attributes listed below are used in *course.json* to configure **Glossary**,
 >**\_isSearchEnabled** (boolean): Turns the search function on and off. Acceptable values are `true` and `false`. The default is `true`. If set to `false`, the search container is not displayed.
 
 >**\_autoLinkTermsInBody** (boolean): Turns automatic term linking in component body text on and off. Acceptable values are `true` and `false`. The default is `false`. If set to `true`, terms found in component body text are wrapped in links in the format `<a href='#' data-glossaryterm='term'>term</a>`. As well as standard component body text, this applies to matching question statement text (for example `.matching-item__title_inner`), Tabs item titles and bodies, (core and OS) Narrative slide titles and bodies, and OS Flipcards card titles and text. It does not apply to matching dropdown answer options.
+
+>**\_autoLinkFirstInstanceOnly** (boolean): Only applies when **\_autoLinkTermsInBody** is `true`. Acceptable values are `true` and `false`. The default is `true`. When `true`, each glossary term is auto-linked only on its first occurrence in the course (in reading order, for the current session); subsequent occurrences are left as plain text. When `false`, every occurrence is linked.
 
 ### Preventing auto-linking of specific words
 
